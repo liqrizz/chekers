@@ -1,5 +1,7 @@
-import Board from './class/Board'
-import Cheker from './class/Cheker'
+import Board from './class/Board';
+import Cheker from './class/Cheker';
+import './src/style.css';
+import $ from "jquery";
 let brd = new Board();
 brd.addNumber();
 brd.getCells().cell_21.cheker_obj = new Cheker('b',  brd.getCells().cell_21.xy, brd.getCells.bind(brd));
