@@ -2,9 +2,11 @@
     background-color: #eeeeee;
     box-sizing: border-box;
     font-size: 15px;
+    margin: 0;
 }
-
-.body { background-color: #eeeeee; }
+table{
+    margin: 0 auto;
+}
    .box { text-align: center; }
    .dott-b{
     background: url('images/b.png')!important;

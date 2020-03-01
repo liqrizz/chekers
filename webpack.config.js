@@ -18,7 +18,7 @@ module.exports = {
       })
     ],
   },
-  entry: './app/app.js',
+  entry: ["@babel/polyfill", "./app/app.js"],
   output: {
     filename: 'bundle.app.js',
     path: path.resolve(__dirname, 'public'),

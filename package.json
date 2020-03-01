@@ -16,8 +16,8 @@
   "author": "zhunsov ermek",
   "license": "ISC",
   "dependencies": {
-    "jquery": "^3.4.1",
-    "webpack-cli": "^3.3.11"
+    "@babel/polyfill": "^7.8.3",
+    "jquery": "^3.4.1"
   },
   "devDependencies": {
     "autoprefixer": "^9.7.4",
@@ -38,7 +38,7 @@
     "optimize-css-assets-webpack-plugin": "^5.0.3",
     "terser-webpack-plugin": "^2.3.5",
     "webpack": "^4.35.0",
-    "webpack-cli": "^3.3.4",
+    "webpack-cli": "^3.3.11",
     "webpack-dev-server": "^3.7.2"
   }
 }
