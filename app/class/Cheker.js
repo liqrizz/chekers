@@ -1,96 +1,113 @@
 export default class Cheker {
-    constructor(color, position, callback){
-        this._color = color;
-        this.getCells = callback;
-        this._type = 0;
+    constructor(param){
+        this._color = param.color;
+        this.getCell = param.callback;
+        this._position = param.position;
+        this._type = param.type;
         this._steps = {};
-        this._position = position;
     }
+
+    get possibleSteps(){
+        this.stepClear();
+        this.stepCalc();
+        return this._steps;
+    }
+    get position(){
+        return this._position;
+    }
+    get color(){
+        return this._color;
+    }
+    get type(){
+        return this._type;
+    }
+
     stepClear(){
         this._steps = {
             move:[],
-            attack:{
-                targets:[],
-                steps: []
-            }
+            attack:[]
         };
     }
-    getPosition(){
-        return this._position;
+    
+    stepCalc(){
+        let y = this.position.y;
+        let id = parseInt(this.position.index);
+
+        const stepMathValues = {
+            step: [
+                {
+                    target: (y%2===0)? 3 : 4,
+                    attackRoad: (y%2===0)? 4 : 3,
+                    animateStep: "72px, 72px",
+                    animateAttack: "144px, 144px"
+                },
+                {
+                    target: (y%2===0)? 4 : 5,
+                    attackRoad: (y%2===0)? 5 : 4,
+                    animateStep: "-72px, 72px",
+                    animateAttack: "-144px, 144px"
+                },
+                {
+                    target: (y%2===0)? -5 : -4,
+                    attackRoad: (y%2===0)? -4 : -5,
+                    animateStep: "72px, -72px",
+                    animateAttack: "144px, -144px"
+                },
+                {
+                    target: (y%2===0)? -4 : -3,
+                    attackRoad: (y%2===0)? -3 : -4,
+                    animateStep: "-72px, -72px",
+                    animateAttack: "-144px, -144px"
+                },
+            ]
+        }
+        
+        stepMathValues.step.forEach(mathValue => {
+            let localtarget = mathValue.target;
+            let outCell = id+localtarget;
+            let localAttackStep = outCell + mathValue.attackRoad;
+            let obj = this.getCell(outCell);
+
+            if(obj===undefined || obj.xy.y===y || obj.xy.y===y+2 || obj.xy.y===y-2) return;
+            
+            let animateStep = mathValue.animateStep;
+            let animateAttack = mathValue.animateAttack;
+            
+            this.targetPusher(outCell, localAttackStep, animateAttack);
+            
+            if (this.color==='w' && localtarget>0) this.bussyTest(outCell, false, animateStep);
+            if (this.color==='b' && localtarget<0) this.bussyTest(outCell, false, animateStep);
+
+        });
     }
-    getColor(){
-        return this._color;
-    }
-    getMathVal(y){
-        let mathval = 0;
-        let color = this.getColor();
-        if(y%2!==0)mathval = 1;
-        if(color==='b')mathval-=8;
-        return parseInt(mathval);
-    }
-    getSteps(){
-        return this._steps;
-    }
-    bussyTest(index){
-        let obj = this.getCells()['cell_'+index];
+
+    bussyTest(step, check = false, animate=null){
+        let obj = this.getCell(step);
         if(obj.cheker_obj===null){
-            this.getSteps().move.push(index);
+            if(!check) this._steps.move.push({step, animate});
+            return {flag: true}
         }
+        return {flag: false, color: obj.cheker_obj.color}
     }
-    targetPusher(index){
-        let obj = this.getCells()['cell_'+index];
-        if(obj.cheker_obj===null) return;
-        if(obj.cheker_obj.getColor()!==this.getColor()){
-            let attacks = this.getSteps().attack.targets;
-            let pushtester = true;
-            attacks.forEach((attack)=>{
-                if(attack===index)pushtester = false;
-            })
-            if(pushtester)this.getSteps().attack.targets.push(index);
+
+    targetPusher(index, attack, animate){
+        let obj = this.getCell(index);
+        let attackCell = this.getCell(attack)
+        
+        if(obj.cheker_obj===null || attackCell===undefined) return;
+        
+        let objRoadToAttack = attackCell.cheker_obj;
+        let targetY = obj.xy.y;
+        let stepY = attackCell.xy.y;
+        
+        if(targetY===stepY || targetY===stepY+2 || targetY===stepY-2) return;
+        
+        if(obj.cheker_obj.color!==this.color && objRoadToAttack===null){
+            this._steps.attack.push({
+                step: attack,
+                target: index,
+                animate
+            });
         }
-    }
-    attackPusher(id){
-        let targets = this.getSteps().attack.targets;
-        let cells = this.getCells();
-        targets.forEach((target)=>{
-            let step = null;
-            if(target-3===id){
-                step = target + 4;
-            }else if(target-4===id){
-                step = target + 5;
-            }else if(target+5===id){
-                step = target - 4;
-            }else if(target+4===id){
-                step = target - 3;
-            }
-            if(step>31) return;
-            let obj = cells['cell_'+step];
-            if(obj.cheker_obj===null){
-                this.getSteps().attack.steps.push(step);
-            }
-        })
-    }
-    getPossibleSteps(){
-        this.stepClear();
-        let x = this.getPosition().x;
-        let y = this.getPosition().y;
-        let adaptive_x_left = y%2===0 ? 0 : 1;
-        let adaptive_x_right = y%2===0 ? 1 : 0;
-        let magicVal = this.getMathVal(y);
-        let id = parseInt(this.getPosition().index);
-        //steps
-        if((x+adaptive_x_left)>0)this.bussyTest(id+3+magicVal);
-        if((x-adaptive_x_right)<3) this.bussyTest(id+4+magicVal);
-        //targets
-        if((x+adaptive_x_left)>0){
-            this.targetPusher(id+3+adaptive_x_left)  
-            this.targetPusher(id-5+adaptive_x_left);
-        };
-        if((x-adaptive_x_right)<3){
-            this.targetPusher(id+4+adaptive_x_left);
-            this.targetPusher(id-4+adaptive_x_left);
-        }
-        this.attackPusher(id);
-        return this.getSteps();
     }
 }
