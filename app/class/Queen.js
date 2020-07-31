@@ -1,12 +1,13 @@
-import Cheker from './Cheker';
-export default class Queen extends Cheker {
-    constructor(param){
-        super(param)
+import Checker from './Checker';
+
+export default class Queen extends Checker {
+    constructor(param) {
+        super(param);
     }
 
-    stepCalc(){
-        let y = this.position.y;
-        let id = parseInt(this.position.index);
+    stepCalc() {
+        const y = this.position.y;
+        const id = parseInt(this.position.index);
         const stepMathValues = {
             true: {
                 step: [
@@ -16,7 +17,7 @@ export default class Queen extends Cheker {
                     {target: -4},
                 ],
             },
-            false:{
+            false: {
                 step: [
                     {target: 4},
                     {target: 5},
@@ -43,20 +44,20 @@ export default class Queen extends Cheker {
                 }
             ],
             limiter: [0, 1, 2, 3, 7, 8, 15, 16, 23, 24, 28, 29, 30, 31]
-        }
+        };
 
         let diagonal = [];
-        let currentMathTree = stepMathValues[(y%2===0).toString()];
-        
-        //Подготовка сторон оветвления 
-        currentMathTree.step.forEach( (mathValue, index) => {
-            let localtarget = mathValue.target;
-            let outCell = id + localtarget;
-            let obj = this.getCell(outCell);
+        const currentMathTree = stepMathValues[(y % 2 === 0).toString()];
 
-            if(obj===undefined || obj.xy.y===y || obj.xy.y===y+2 || obj.xy.y===y-2) return;
-            
-            let animate = stepMathValues.animate[index];
+        // Подготовка сторон оветвления
+        currentMathTree.step.forEach((mathValue, index) => {
+            const localTarget = mathValue.target;
+            const outCell = id + localTarget;
+            const obj = this.getCell(outCell);
+
+            if (obj === undefined || obj.xy.y === y || obj.xy.y === y + 2 || obj.xy.y === y - 2) return;
+
+            const animate = stepMathValues.animate[index];
 
             diagonal.push({
                 cell: outCell,
@@ -69,21 +70,21 @@ export default class Queen extends Cheker {
         let search = true;
         let animation_iterator = 1;
 
-        while(search){
-            let iterationData = [];
+        while (search) {
+            const iterationData = [];
 
             diagonal.forEach(elem => {
-                if(elem.end) return;
-                
-                let cell = elem.cell;
-                let find = elem.find.flag ? elem.find : this.targetDetecter(cell);
-                let target = elem.find.flag ? elem.target : cell;
-                let x = elem.animate.x * animation_iterator;
-                let y = elem.animate.y * animation_iterator;
-                let animateStep = x+'px, '+ y +'px';
-                let bussy = this.bussyTest(cell, false, animateStep);
+                if (elem.end) return;
 
-                if(bussy.flag && elem.find.flag){
+                const cell = elem.cell;
+                const find = elem.find.flag ? elem.find : this.targetDetector(cell);
+                const target = elem.find.flag ? elem.target : cell;
+                const x = elem.animate.x * animation_iterator;
+                const y = elem.animate.y * animation_iterator;
+                const animateStep = x + 'px, ' + y + 'px';
+                const busy = this.cellTest(cell, false, animateStep);
+
+                if (busy.flag && elem.find.flag) {
                     this._steps.attack.push({
                         step: cell,
                         target,
@@ -91,53 +92,53 @@ export default class Queen extends Cheker {
                     });
                 }
 
-                let id = elem.id;
-                let localY = this.getCell(cell).xy.y;
-                let localCurrentMathTree = stepMathValues[(localY%2===0).toString()];
-                let localtarget = localCurrentMathTree.step[id].target;
-                let outCell = cell + localtarget;
-                let animate = stepMathValues.animate[id];
+                const id = elem.id;
+                const localY = this.getCell(cell).xy.y;
+                const localCurrentMathTree = stepMathValues[(localY % 2 === 0).toString()];
+                const localTarget = localCurrentMathTree.step[id].target;
+                const outCell = cell + localTarget;
+                const animate = stepMathValues.animate[id];
                 let end = stepMathValues.limiter.includes(cell);
-                if(!end && find.flag && !this.bussyTest(outCell, true).flag) end = true;
-                
-                if(!end && elem.find.flag){
-                    localCurrentMathTree.step.forEach((test, testIndex)=>{
-                        let testoutcell = cell + test.target
+                if (!end && find.flag && !this.cellTest(outCell, true).flag) end = true;
 
-                        if(testoutcell === elem.find.cell || end) return;
-                        if(!this.targetDetecter(testoutcell).flag) return;
+                if (!end && elem.find.flag) {
+                    localCurrentMathTree.step.forEach((test, testIndex) => {
+                        const test_out_cell = cell + test.target;
 
-                        let testY = this.getCell(testoutcell).xy.y;
-                        let testCurrentMathTree = stepMathValues[(testY%2===0).toString()];
-                        let testTarget = testCurrentMathTree.step[testIndex].target;
-                        let cheking_bussy_cell = testoutcell + testTarget;
+                        if (test_out_cell === elem.find.cell || end) return;
+                        if (!this.targetDetector(test_out_cell).flag) return;
 
-                        if(cheking_bussy_cell<0 || cheking_bussy_cell>31) return;
-                        if(!this.targetDetecter(cheking_bussy_cell).flag) end = true
+                        const testY = this.getCell(test_out_cell).xy.y;
+                        const testCurrentMathTree = stepMathValues[(testY % 2 === 0).toString()];
+                        const testTarget = testCurrentMathTree.step[testIndex].target;
+                        const checking_cell = test_out_cell + testTarget;
+
+                        if (checking_cell < 0 || checking_cell > 31) return;
+                        if (!this.targetDetector(checking_cell).flag) end = true;
                     });
                 }
-            
-                if(!end && bussy.color===this.color) end = true;
-                
+
+                if (!end && busy.color === this.color) end = true;
+
                 iterationData.push({
                     cell: outCell, id, end, target, find, animate
                 });
 
             });
-            
+
             diagonal = [...iterationData];
-            
-            if(diagonal.filter(elem=>!elem.end).length===0){
+
+            if (diagonal.filter(elem => !elem.end).length === 0) {
                 search = false;
             }
             animation_iterator++;
         }
     }
 
-    targetDetecter(index){
-        let obj = this.getCell(index);
-        if(obj.cheker_obj===null) return {flag: false, cell: index};
-        if(obj.cheker_obj.color!==this.color) return {flag: true, cell: index};
-        return {flag: false, cell: index}
+    targetDetector(index) {
+        const obj = this.getCell(index);
+        if (obj.checker_obj === null) return {flag: false, cell: index};
+        if (obj.checker_obj.color !== this.color) return {flag: true, cell: index};
+        return {flag: false, cell: index};
     }
 }

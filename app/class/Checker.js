@@ -1,4 +1,4 @@
-export default class Cheker {
+export default class Checker {
     constructor(param){
         this._color = param.color;
         this.getCell = param.callback;
@@ -30,8 +30,8 @@ export default class Cheker {
     }
     
     stepCalc(){
-        let y = this.position.y;
-        let id = parseInt(this.position.index);
+        const y = this.position.y;
+        const id = parseInt(this.position.index);
 
         const stepMathValues = {
             step: [
@@ -60,49 +60,49 @@ export default class Cheker {
                     animateAttack: "-144px, -144px"
                 },
             ]
-        }
+        };
         
         stepMathValues.step.forEach(mathValue => {
-            let localtarget = mathValue.target;
-            let outCell = id+localtarget;
-            let localAttackStep = outCell + mathValue.attackRoad;
-            let obj = this.getCell(outCell);
+            const localTarget = mathValue.target;
+            const outCell = id + localTarget;
+            const localAttackStep = outCell + mathValue.attackRoad;
+            const obj = this.getCell(outCell);
 
             if(obj===undefined || obj.xy.y===y || obj.xy.y===y+2 || obj.xy.y===y-2) return;
             
-            let animateStep = mathValue.animateStep;
-            let animateAttack = mathValue.animateAttack;
+            const animateStep = mathValue.animateStep;
+            const animateAttack = mathValue.animateAttack;
             
             this.targetPusher(outCell, localAttackStep, animateAttack);
             
-            if (this.color==='w' && localtarget>0) this.bussyTest(outCell, false, animateStep);
-            if (this.color==='b' && localtarget<0) this.bussyTest(outCell, false, animateStep);
+            if (this.color==='w' && localTarget>0) this.cellTest(outCell, false, animateStep);
+            if (this.color==='b' && localTarget<0) this.cellTest(outCell, false, animateStep);
 
         });
     }
 
-    bussyTest(step, check = false, animate=null){
-        let obj = this.getCell(step);
-        if(obj.cheker_obj===null){
+    cellTest(step, check = false, animate=null){
+        const obj = this.getCell(step);
+        if(obj.checker_obj===null){
             if(!check) this._steps.move.push({step, animate});
-            return {flag: true}
+            return {flag: true};
         }
-        return {flag: false, color: obj.cheker_obj.color}
+        return {flag: false, color: obj.checker_obj.color};
     }
 
     targetPusher(index, attack, animate){
-        let obj = this.getCell(index);
-        let attackCell = this.getCell(attack)
+        const obj = this.getCell(index);
+        const attackCell = this.getCell(attack);
         
-        if(obj.cheker_obj===null || attackCell===undefined) return;
+        if(obj.checker_obj===null || attackCell===undefined) return;
         
-        let objRoadToAttack = attackCell.cheker_obj;
-        let targetY = obj.xy.y;
-        let stepY = attackCell.xy.y;
+        const objRoadToAttack = attackCell.checker_obj;
+        const targetY = obj.xy.y;
+        const stepY = attackCell.xy.y;
         
         if(targetY===stepY || targetY===stepY+2 || targetY===stepY-2) return;
         
-        if(obj.cheker_obj.color!==this.color && objRoadToAttack===null){
+        if(obj.checker_obj.color!==this.color && objRoadToAttack===null){
             this._steps.attack.push({
                 step: attack,
                 target: index,

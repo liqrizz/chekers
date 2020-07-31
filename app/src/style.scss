@@ -1,12 +1,16 @@
-body { 
+body {
     background-color: #eeeeee;
     box-sizing: border-box;
     font-family: sans-serif;
     font-size: 15px;
     margin: 0;
 }
-.box { text-align: center; }
-span.cheker {
+
+.box {
+    text-align: center;
+}
+
+.checker {
     cursor: pointer;
     display: block;
     width: 55px;
@@ -14,52 +18,85 @@ span.cheker {
     background-size: 100%;
     border-radius: 50%;
     margin: 0 auto;
-    box-shadow: 0px 1px 2px 0 #00000033;
+    box-shadow: 0 1px 2px 0 #00000033;
     transition: transform 0.15s;
     box-sizing: border-box;
-    border: 7px solid
+    border: 7px solid;
+
+    &.w {
+        &.default {
+            background: #fff;
+            border-color: #ccc;
+        }
+        &.queen {
+            background: #FFC107;
+            border-color: #ff7800;
+        }
+    }
+
+    &.b {
+        &.default {
+            background: #444;
+            border-color: #5f5f5f;
+        }
+        &.queen {
+            background: #2c1556;
+            border-color: #353382;
+        }
+    }
 }
-.cheker.w.default{
-    background: #fff;
-    border-color: #ccc;
-}
-.cheker.w.queen {
-    background: #FFC107;
-    border-color: #ff7800;
-}
-.cheker.b.default{
-    background: #444;
-    border-color:#5f5f5f;
-}
-span.cheker.b.queen {
-    background: #2c1556;
-    border-color: #353382;
-}
-.black.active>span {
-    border-color: #6dffaf!important;
+
+.black.active > span {
+    border-color: #6dffaf !important;
     box-shadow: 0 0 5px 0 #6dffaf;
 }
-.green{
+
+.green {
     opacity: 0.7;
     cursor: pointer;
 }
-.centered { display: inline-block; margin: 0; }
-.chess-board { border-spacing: 0; border-collapse: collapse; }
-.chess-board th { padding: .5em; }
-.chess-board td { width: 70px; height: 70px; text-align: center; vertical-align: middle; }
-.chess-board .white { background: #f0d9b5; }
-.chess-board .black { background: #b58863; }
-a:link,a:active { 
- text-decoration: none; color : #006699; 
+
+.centered {
+    display: inline-block;
+    margin: 0;
 }
-a:visited {
- text-decoration: none; color : #003399; 
+
+.chess-board {
+    border-spacing: 0;
+    border-collapse: collapse;
+    th {
+        padding: .5em;
+    }
+
+    td {
+        width: 70px;
+        height: 70px;
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    .white {
+        background: #f0d9b5;
+    }
+
+    .black {
+        background: #b58863;
+    }
 }
-.dott-w, .dott-b{
-    cursor: pointer;
-} 
-a:hover	{ 
- text-decoration: underline; color : #006900; 
+
+a {
+    &:link, &:active {
+        text-decoration: none;
+        color: #006699;
+    }
+    &:visited {
+        text-decoration: none;
+        color: #003399;
+    }
+    &:hover {
+        text-decoration: underline;
+        color: #006900;
+    }
 }
 
 .game {
@@ -79,7 +116,7 @@ a:hover	{
 
 .gamer {
     background: #777977;
-    padding: 0px 10px;
+    padding: 0 10px;
     border: 1px solid #777977;
     height: 70px;
     display: flex;
@@ -110,16 +147,17 @@ span.img.black {
     background: #dcdbd9;
     border-radius: 50%;
 }
+
 .name {
     color: #ffffff;
     margin-bottom: 7px;
 }
 
-span.dominate-data {
+.dominate-data {
     color: white;
 }
 
-span.indicator {
+.indicator {
     background: #CDDC39;
     height: 10px;
     width: 10px;
