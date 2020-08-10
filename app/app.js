@@ -1,8 +1,8 @@
-import Board from './class/Board';
+import Board from './classes/Board';
 import './src/style.scss';
-import $ from "jquery";
+import {elemClick} from "./utils/DOMUtils";
 const brd = new Board();
-$('.black').click(function(){
-    const index = $(this).data('index');
+elemClick('.black', elem => {
+    const index = Number.parseInt(elem.dataset.index);
     brd.cellHandler(index);
 });

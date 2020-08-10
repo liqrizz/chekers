@@ -36,13 +36,13 @@ export default class Checker {
         const stepMathValues = {
             step: [
                 {
-                    target: (y%2===0)? 3 : 4,
-                    attackRoad: (y%2===0)? 4 : 3,
+                    target: (y%2 === 0)? 3 : 4,
+                    attackRoad: (y%2 === 0)? 4 : 3,
                     animateStep: "72px, 72px",
                     animateAttack: "144px, 144px"
                 },
                 {
-                    target: (y%2===0)? 4 : 5,
+                    target: (y%2 === 0)? 4 : 5,
                     attackRoad: (y%2===0)? 5 : 4,
                     animateStep: "-72px, 72px",
                     animateAttack: "-144px, 144px"
@@ -83,7 +83,7 @@ export default class Checker {
 
     cellTest(step, check = false, animate=null){
         const obj = this.getCell(step);
-        if(obj.checker_obj===null){
+        if(obj.checker_obj === null){
             if(!check) this._steps.move.push({step, animate});
             return {flag: true};
         }

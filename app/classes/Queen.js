@@ -81,7 +81,7 @@ export default class Queen extends Checker {
                 const target = elem.find.flag ? elem.target : cell;
                 const x = elem.animate.x * animation_iterator;
                 const y = elem.animate.y * animation_iterator;
-                const animateStep = x + 'px, ' + y + 'px';
+                const animateStep = `${x}px, ${y}px`;
                 const busy = this.cellTest(cell, false, animateStep);
 
                 if (busy.flag && elem.find.flag) {

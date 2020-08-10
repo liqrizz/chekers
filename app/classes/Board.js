@@ -1,6 +1,6 @@
-import $ from "jquery";
 import Checker from './Checker';
 import Queen from './Queen';
+import {removeClass} from "../utils/DOMUtils";
 
 export default class Board {
     constructor() {
@@ -36,7 +36,7 @@ export default class Board {
     }
 
     getCell(index) {
-        return this.cells['cell_' + index];
+        return this.cells[index];
     }
 
     stepsData(index) {
@@ -120,18 +120,18 @@ export default class Board {
             : new Queen(param);
 
         const elem = this.htmlElem(cell);
-        const className = color === 'b' ? 'b ' + type : 'w ' + type;
+        const className = `${color} ${type}`;
         const checker = document.createElement('span');
 
-        checker.className = 'checker ' + className;
+        checker.className = `checker ${className}`;
         checker.style.transform = animate === null
             ? 'translate(0, 0)'
-            : 'translate(' + animate + ')';
+            : `translate(${animate})`;
 
         elem.append(checker);
         setTimeout(() => checker.style.transform = 'translate(0px, 0px)', 0);
 
-        $('.black').removeClass('green active');
+        removeClass('.black',['green', 'active']);
     }
 
     important(index, from) {
@@ -145,7 +145,7 @@ export default class Board {
             const turn = this.turn;
 
             if (current_checker !== null && current_checker.color === turn) {
-                const index = cell.replace('cell_', '');
+                const index = cell;
                 const data = this.stepsData(index);
                 if (data.attack.length > 0) important.push(index);
             }
@@ -171,7 +171,7 @@ export default class Board {
     }
 
     cellLight(index, cells) {
-        $('.black').removeClass('green active');
+        removeClass('.black',['green', 'active']);
 
         if (cells.length < 1) return;
 
@@ -186,29 +186,27 @@ export default class Board {
 
     init() {
         let k = 0;
-        for (let yi = 0; yi < 8; yi++) {
-            for (let xi = 0; xi < 4; xi++) {
-                this._cells['cell_' + k] = {
-                    xy: {
-                        x: xi,
-                        y: yi,
-                        index: k,
-                    },
-                    checker_obj: null
-                };
+        for (let yi = 0; yi < 8; yi++) for (let xi = 0; xi < 4; xi++) {
+            this._cells[k] = {
+                xy: {
+                    x: xi,
+                    y: yi,
+                    index: k,
+                },
+                checker_obj: null
+            };
 
-                $(this.htmlElem(k)).data('index', k);
+            this.htmlElem(k).dataset.index = k.toString();
 
-                if(k < 12){
-                    this.createChecker('w', k);
-                }
-
-                if(k > 19){
-                    this.createChecker('b', k);
-                }
-
-                k++;
+            if (k < 12) {
+                this.createChecker('w', k);
             }
+
+            if (k > 19) {
+                this.createChecker('b', k);
+            }
+
+            k++;
         }
     }
 }
